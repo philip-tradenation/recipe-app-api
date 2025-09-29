@@ -2,6 +2,7 @@ from django.test import SimpleTestCase
 
 from app import calc
 
+
 class CalTest(SimpleTestCase):
 
     def test_cal(self):
