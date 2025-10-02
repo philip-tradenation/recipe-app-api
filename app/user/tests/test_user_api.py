@@ -9,6 +9,7 @@ CREATE_USER_URL = reverse('user:create')
 TOKEN_URL = reverse('user:token')
 ME_URL = reverse('user:me')
 
+
 def create_user(**params):
     return get_user_model().objects.create_user(**params)
 
@@ -105,19 +106,22 @@ class PublicUserApiTests(TestCase):
 class PrivateUserApiTests(TestCase):
 
     def setUp(self):
-        self.user = create_user(email='user@example.com', password='test123', name='test')
+        self.user = create_user(email='user@example.com', password='test123',
+                                name='test')
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
 
     def test_retrieve_profile_success(self):
         response = self.client.get(ME_URL)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, {'name': self.user.name, 'email': self.user.email})
+        self.assertEqual(response.data, {'name': self.user.name,
+                                         'email': self.user.email})
 
     def test_post_me_not_allowed(self):
         response = self.client.post(ME_URL, {})
 
-        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+        self.assertEqual(response.status_code,
+                         status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def test_update_user_profile(self):
         payload = {'name': 'updated', 'password': 'newpwd123'}
